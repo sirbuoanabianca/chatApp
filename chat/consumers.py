@@ -1,10 +1,10 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-
+from .models import User, ChatHistory, ChatRoom, Message
 
 class ChatRoomConsumer(AsyncWebsocketConsumer):
-    # we want to start something when someone connects to chatroom
 
+    # we want to start something when someone connects to chatroom
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
@@ -12,12 +12,12 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
         # creating a new group that will be utilizing this consumer
         await self.channel_layer.group_add(
             self.room_group_name,
-            self.channel_name  # pointer to the channel layer instance and the channel name that will reach the consumer
+            # pointer to the channel layer instance and the channel name that will reach the consumer
+            self.channel_name
         )
 
         # accept the connection before msg
         await self.accept()
-
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
