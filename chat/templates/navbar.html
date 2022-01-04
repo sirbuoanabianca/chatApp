@@ -1,8 +1,11 @@
 {% load static%}
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="#">
-      <img src="{% static 'logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
-      WeChat
+      <img src="{% static 'Logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
+      WeChat  
+      {%if user.is_authenticated%}
+        <p style="margin-top: 10px;font-size: small;">You're logged in as: '{{user.username}}'</p>
+      {%endif%}
     </a>
 
     <span><a href="{%url 'logout' %}" style="color:white">Logout</a></span> 

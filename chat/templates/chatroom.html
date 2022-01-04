@@ -2,13 +2,50 @@
 
 
 {% block content %}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-avatar@latest/dist/avatar.min.css" rel="stylesheet">
+
+<style>
+    .my-custom-scrollbar {
+    position: relative;
+    /* height: 500px; */
+    overflow: auto;
+    }
+    .table-wrapper-scroll-y {
+    display: block;
+    height: 75vh;
+    }
+
+    .table-messages{
+        height: 30vh;
+    }
+
+</style>
+
+
     <div class="container">
         <div class="row d-flex justify-content-center">
             <div class="col-6">
                 <form>
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1" class="h4 pt-5">Chatroom</label>
-                        <textarea readonly=true class="form-control" id="chat-text" rows="10"></textarea>
+                    
+                        <div class="card card-body">
+                            <div class="table-messages table-wrapper-scroll-y my-custom-scrollbar">
+                                <table id="messagesTable" class="table table-borderless  mb-0">
+                              
+                                    {% for m in messagesFromThisRoom %}
+                                        <tr>
+        
+                                           <td class="col-md-4"> <span class="avatar avatar-32 bg-secondary text-white rounded">{{m.author|make_list|first}}</span>  {{m.author}} : </td>
+                                           <td> {{m.content}} </td> 
+                                           
+                                        </tr>
+                                    {% endfor%}
+                                </table>
+                            </div>
+                            </div>
+                            
                     </div>
 
                     <div class="form-group">
@@ -16,16 +53,32 @@
                     </div>
 
                     <input class="btn btn-secondary btn-lg btn-block" id="submit" type="button" value="Send">
-
-
-                   
                 </form>
+            
 
+                <!-- <div class="card card-body">
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table id="messagesTable" class="table table-bordered table-striped mb-0">
+                      
+                            {% for m in messagesFromThisRoom %}
+                                <tr>
+                                    
+                                    <td> <span class="avatar avatar-32 bg-secondary text-white rounded-2">{{m.author|make_list|first}}</span> </td>
+                                   <td> {{m.author}} </td>
+                                   <td> {{m.content}} </td> 
+                                   
+                                </tr>
+                            {% endfor%}
+                        </table>
+                    </div>
+                    </div> -->
 
             </div>
 
             <div class="card card-body">
-                <table class="table">
+            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                <table class="table table-bordered table-striped mb-0">
+                <!-- <table class="table"> -->
                     <tr>
                         <th>Your chat history</th>
                     </tr>
@@ -38,6 +91,7 @@
                     {% endfor%}
                 </table>
             </div>
+            </div>
 
         </div>
     </div>
@@ -45,6 +99,7 @@
 {#    <textarea id="chat-text" cols="80" rows="30"></textarea><br>#}
 {#    <input id="input" type="text" size="80"></br>#}
 {#    <input id="submit" type="button" value="Send">#}
+
 
 
     {{room_name|json_script:"room-name"}}
@@ -84,13 +139,32 @@
         chatSocket.onmessage=function(e){
             const data=JSON.parse(e.data);
             console.log(data)
-            document.querySelector('#chat-text').value += 
-                (data.username + ': ' +  data.message + '\n');
+            // document.querySelector('#chat-text').value += 
+            //     (data.username + ': ' +  data.message + '\n');
+
+            // messagesTable
+            //creem o variabila cu un rand de tabel
+
+            // var newR = "<tr> <td>"+
+            //     "<span class=\"avatar avatar-32 bg-secondary text-white rounded-2\">"+data.username[0]+"</span>"
+            //     +"</td><td>"+data.username+"</td> <td>"+data.message+"</td> </tr>";
+                
+            var newR =
+            "<tr>"+
+                "<td class=\"col-md-4\"> <span class=\"avatar avatar-32 bg-secondary text-white rounded\">"+data.username[0]+"</span>"+data.username+
+                " : </td><td> " +data.message+ "</td>" +
+            "</tr>";
+
+            var tableRef=document.getElementById('messagesTable').getElementsByTagName('tbody')[0];
+            var newRow=tableRef.insertRow(tableRef.rows.length);
+            newRow.innerHTML=newR;
+            
         }
 
 
 
     </script>
+
 
 
     {% endblock content%}

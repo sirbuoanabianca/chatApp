@@ -1,6 +1,7 @@
 import json
 from django.contrib.auth import authenticate, login, logout
 # from django.http import response
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, UserModel
 from django.contrib import messages
@@ -60,12 +61,17 @@ def roomDeb(request):
 # decorator for restricting the access if the user is not logged in
 @login_required(login_url='login')
 def room(request, room_name):
+    (currChatroom, created) = ChatRoom.objects.all().get_or_create(name=room_name)
 
     # User->foreign key pt ChatHistory
     # toate chatHistory care il contin pe acest user
     history = request.user.chathistory_set.all()
-    context = {'chathistory': history, 'room_name': room_name}
-    (currChatroom, created) = ChatRoom.objects.all().get_or_create(name=room_name)
+    messages = currChatroom.message_set.all()
+
+    context = {'chathistory': history,
+               'room_name': room_name,
+                'messagesFromThisRoom': messages
+               }
 
     if not request.user.chathistory_set.filter(chatRoom__name=room_name).exists():
         ChatHistory(user=request.user, chatRoom=currChatroom).save()
@@ -77,15 +83,12 @@ def room(request, room_name):
 def addNewMessage(request):
     # adauga mesajul in tabela Message
     if request.method == 'POST':
-        data = json.loads(request.body) #zice ca json ar fi gol
-        roomName = data.get('room-name')
-        message = data.get('content')
-    
-
-        # roomName = request.POST.get('room-name')
-        # mess = request.POST.get('content')
-
+        roomName = request.POST.get('room-name')  # astea is ok
+        message = request.POST.get('content')
         user = request.user
         room = ChatRoom.objects.all().filter(name=roomName)
+
         if room.exists():
-            Message(author=user, ChatRoom=room, content=message).save()
+            # room e defapt o lista,luam primul rezultat
+            Message(author=user, chatRoom=room[0], content=message).save()
+    return JsonResponse({"status": 200})
