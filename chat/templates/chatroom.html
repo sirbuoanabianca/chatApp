@@ -1,62 +1,70 @@
-{%extends 'main.html'%}
+{%extends 'main.html'%} {% block content %}
 
-
-{% block content %}
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-avatar@latest/dist/avatar.min.css" rel="stylesheet">
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap-avatar@latest/dist/avatar.min.css"
+  rel="stylesheet"
+/>
 
 <style>
-    .my-custom-scrollbar {
+  .my-custom-scrollbar {
     position: relative;
     /* height: 500px; */
     overflow: auto;
-    }
-    .table-wrapper-scroll-y {
+  }
+  .table-wrapper-scroll-y {
     display: block;
     height: 75vh;
-    }
+  }
 
-    .table-messages{
-        height: 30vh;
-    }
-
+  .table-messages {
+    height: 30vh;
+  }
 </style>
 
+<div class="container">
+  <div class="row d-flex justify-content-center">
+    <div class="col-6">
+      <form>
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1" class="h4 pt-5"
+            >Chatroom</label
+          >
 
-    <div class="container">
-        <div class="row d-flex justify-content-center">
-            <div class="col-6">
-                <form>
-                    <div class="form-group">
-                        <label for="exampleFormControlTextarea1" class="h4 pt-5">Chatroom</label>
-                    
-                        <div class="card card-body">
-                            <div class="table-messages table-wrapper-scroll-y my-custom-scrollbar">
-                                <table id="messagesTable" class="table table-borderless  mb-0">
-                              
-                                    {% for m in messagesFromThisRoom %}
-                                        <tr>
-        
-                                           <td class="col-md-4"> <span class="avatar avatar-32 bg-secondary text-white rounded">{{m.author|make_list|first}}</span>  {{m.author}} : </td>
-                                           <td> {{m.content}} </td> 
-                                           
-                                        </tr>
-                                    {% endfor%}
-                                </table>
-                            </div>
-                            </div>
-                            
-                    </div>
+          <div class="card card-body">
+            <div
+              class="table-messages table-wrapper-scroll-y my-custom-scrollbar"
+            >
+              <table id="messagesTable" class="table table-borderless mb-0">
+                {% for m in messagesFromThisRoom %}
+                <tr>
+                  <td class="col-md-4">
+                    <span
+                      class="avatar avatar-32 bg-secondary text-white rounded"
+                      >{{m.author|make_list|first}}</span
+                    >
+                    {{m.author}} :
+                  </td>
+                  <td>{{m.content}}</td>
+                </tr>
+                {% endfor%}
+              </table>
+            </div>
+          </div>
+        </div>
 
-                    <div class="form-group">
-                        <input class="form-group" id="input" type="text">
-                    </div>
+        <div class="form-group">
+          <input class="form-group" id="input" type="text" />
+        </div>
 
-                    <input class="btn btn-secondary btn-lg btn-block" id="submit" type="button" value="Send">
-                </form>
-            
+        <input
+          class="btn btn-secondary btn-lg btn-block"
+          id="submit"
+          type="button"
+          value="Send"
+        />
+      </form>
 
-                <!-- <div class="card card-body">
+      <!-- <div class="card card-body">
                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                         <table id="messagesTable" class="table table-bordered table-striped mb-0">
                       
@@ -72,100 +80,121 @@
                         </table>
                     </div>
                     </div> -->
-
-            </div>
-
-            <div class="card card-body">
-            <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                <table class="table table-bordered table-striped mb-0">
-                <!-- <table class="table"> -->
-                    <tr>
-                        <th>Your chat history</th>
-                    </tr>
-
-                    {% for i in chathistory %}
-                        <tr>
-                           <td>{{i.chatRoom.name}}</td> 
-                           <td><a class="btn btn-sm btn-dark" href="{% url 'room' i.chatRoom.name %}" style="color:white">Join</a></td>
-                        </tr>
-                    {% endfor%}
-                </table>
-            </div>
-            </div>
-
-        </div>
     </div>
 
-{#    <textarea id="chat-text" cols="80" rows="30"></textarea><br>#}
-{#    <input id="input" type="text" size="80"></br>#}
-{#    <input id="submit" type="button" value="Send">#}
+    <div class="card card-body">
+      <div class="table-wrapper-scroll-y my-custom-scrollbar">
+        <table class="table table-bordered table-striped mb-0">
+          <!-- <table class="table"> -->
+          <tr>
+            <th>Your chat history</th>
+          </tr>
 
+          {% for i in chathistory %}
+          <tr>
+            <td>{{i.chatRoom.name}}</td>
+            <td>
+              <a
+                class="btn btn-sm btn-dark"
+                href="{% url 'room' i.chatRoom.name %}"
+                style="color: white"
+                >Join</a
+              >
+            </td>
+          </tr>
+          {% endfor%}
+        </table>
+      </div>
 
+      <div class="form-group">
+       
+        <span style="display: flex; ">
+            <p>Search room : </p>
+          <input class="form-group" id="inputSearchRoom" type="text" />
+         
+        </span>
 
-    {{room_name|json_script:"room-name"}}
-    {{request.user.username|json_script:"user_username"}}
+        <a
+          class="btn btn-sm btn-dark"
+          style="color: white"
+          OnClick="buttonClickSearchRoom()"
+          >Join room</a
+        >
+      </div>
+    </div>
+  </div>
 
-    <script>
+  {{room_name|json_script:"room-name"}}
+  {{request.user.username|json_script:"user_username"}}
 
-        const user_username=JSON.parse(document.getElementById('user_username').textContent);
-        const roomName=JSON.parse(document.getElementById('room-name').textContent);
+  <script>
+    const user_username = JSON.parse(
+      document.getElementById("user_username").textContent
+    );
+    const roomName = JSON.parse(
+      document.getElementById("room-name").textContent
+    );
 
-        
-        document.querySelector('#submit').onclick = function (e) {
-            const messageInputDom = document.querySelector('#input');
-            const message = messageInputDom.value;
-            // trimite date(mesajul trimis in chat) serverului pt a apela functia care adauga mesajul in tabela
-            $.post("{% url 'message' %}",{
-                "room-name":roomName,
-                "content":message,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            })
-            chatSocket.send(JSON.stringify({
-                'message' : message,
-                'username' : user_username,
-            }));
-        messageInputDom.value='';
-        };
+    function buttonClickSearchRoom() {
+      var url = "/chat/chatroom/";
+      url += document.getElementById("inputSearchRoom").value;
+      url += "/";
+      window.location.href = url;
+    }
 
+    document.querySelector("#submit").onclick = function (e) {
+      const messageInputDom = document.querySelector("#input");
+      const message = messageInputDom.value;
+      // trimite date(mesajul trimis in chat) serverului pt a apela functia care adauga mesajul in tabela
+      $.post("{% url 'message' %}", {
+        "room-name": roomName,
+        content: message,
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+      });
+      chatSocket.send(
+        JSON.stringify({
+          message: message,
+          username: user_username,
+        })
+      );
+      messageInputDom.value = "";
+    };
 
-        const chatSocket= new WebSocket(
-            'ws://' +
-            window.location.host +
-            '/ws/chat/' +
-            roomName +
-            '/'
-        );
+    const chatSocket = new WebSocket(
+      "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
+    );
 
-        chatSocket.onmessage=function(e){
-            const data=JSON.parse(e.data);
-            console.log(data)
-            // document.querySelector('#chat-text').value += 
-            //     (data.username + ': ' +  data.message + '\n');
+    chatSocket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      console.log(data);
+      // document.querySelector('#chat-text').value +=
+      //     (data.username + ': ' +  data.message + '\n');
 
-            // messagesTable
-            //creem o variabila cu un rand de tabel
+      // messagesTable
+      //creem o variabila cu un rand de tabel
 
-            // var newR = "<tr> <td>"+
-            //     "<span class=\"avatar avatar-32 bg-secondary text-white rounded-2\">"+data.username[0]+"</span>"
-            //     +"</td><td>"+data.username+"</td> <td>"+data.message+"</td> </tr>";
-                
-            var newR =
-            "<tr>"+
-                "<td class=\"col-md-4\"> <span class=\"avatar avatar-32 bg-secondary text-white rounded\">"+data.username[0]+"</span>"+data.username+
-                " : </td><td> " +data.message+ "</td>" +
-            "</tr>";
+      // var newR = "<tr> <td>"+
+      //     "<span class=\"avatar avatar-32 bg-secondary text-white rounded-2\">"+data.username[0]+"</span>"
+      //     +"</td><td>"+data.username+"</td> <td>"+data.message+"</td> </tr>";
 
-            var tableRef=document.getElementById('messagesTable').getElementsByTagName('tbody')[0];
-            var newRow=tableRef.insertRow(tableRef.rows.length);
-            newRow.innerHTML=newR;
-            
-        }
+      var newR =
+        "<tr>" +
+        '<td class="col-md-4"> <span class="avatar avatar-32 bg-secondary text-white rounded">' +
+        data.username[0] +
+        "</span>" +
+        data.username +
+        " : </td><td> " +
+        data.message +
+        "</td>" +
+        "</tr>";
 
+      var tableRef = document
+        .getElementById("messagesTable")
+        .getElementsByTagName("tbody")[0];
+      var newRow = tableRef.insertRow(tableRef.rows.length);
+      newRow.innerHTML = newR;
+    };
+  </script>
 
-
-    </script>
-
-
-
-    {% endblock content%}
-    
+  {% endblock content%}
+</div>

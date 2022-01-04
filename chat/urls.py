@@ -8,6 +8,6 @@ urlpatterns = [
     path('register/', views.registerPage, name='register'),
     path('logout/', views.logoutUser, name='logout'),
     path('chatroom/message/', views.addNewMessage, name='message'),  #endpoint pt adaugare mesaj nou in tabel
-    path('chatroom/camerista/', views.roomDeb, name='roomDebug'),
+    path('chatroom/welcomeRoom/', views.roomDeb, name='welcomeRoom'),
     path('chatroom/<str:room_name>/', views.room, name='room') 
 ]
