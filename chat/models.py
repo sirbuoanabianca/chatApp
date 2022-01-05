@@ -19,3 +19,7 @@ class Message(models.Model):
     chatRoom = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
     content = models.TextField(max_length=255)
     timeStamp = models.DateTimeField(auto_now_add=True)
+
+class BannedUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_banned = models.BooleanField(default=False)

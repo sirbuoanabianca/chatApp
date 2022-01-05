@@ -13,7 +13,7 @@
   }
   .table-wrapper-scroll-y {
     display: block;
-    height: 75vh;
+    height: 58vh;
   }
 
   .table-messages {
@@ -35,6 +35,7 @@
               class="table-messages table-wrapper-scroll-y my-custom-scrollbar"
             >
               <table id="messagesTable" class="table table-borderless mb-0">
+                <tr></tr>
                 {% for m in messagesFromThisRoom %}
                 <tr>
                   <td class="col-md-4">
@@ -64,28 +65,11 @@
         />
       </form>
 
-      <!-- <div class="card card-body">
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                        <table id="messagesTable" class="table table-bordered table-striped mb-0">
-                      
-                            {% for m in messagesFromThisRoom %}
-                                <tr>
-                                    
-                                    <td> <span class="avatar avatar-32 bg-secondary text-white rounded-2">{{m.author|make_list|first}}</span> </td>
-                                   <td> {{m.author}} </td>
-                                   <td> {{m.content}} </td> 
-                                   
-                                </tr>
-                            {% endfor%}
-                        </table>
-                    </div>
-                    </div> -->
     </div>
 
     <div class="card card-body">
       <div class="table-wrapper-scroll-y my-custom-scrollbar">
         <table class="table table-bordered table-striped mb-0">
-          <!-- <table class="table"> -->
           <tr>
             <th>Your chat history</th>
           </tr>
@@ -146,11 +130,13 @@
       const messageInputDom = document.querySelector("#input");
       const message = messageInputDom.value;
       // trimite date(mesajul trimis in chat) serverului pt a apela functia care adauga mesajul in tabela
+      //adresa la care se face post
       $.post("{% url 'message' %}", {
         "room-name": roomName,
         content: message,
         csrfmiddlewaretoken: "{{ csrf_token }}",
       });
+      //trimit la ceilalti useri din chatroom mesajul
       chatSocket.send(
         JSON.stringify({
           message: message,
@@ -164,18 +150,10 @@
       "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
     );
 
+    //cand datele sunt primite prin websocket se parseaza din json in acea variabila
     chatSocket.onmessage = function (e) {
       const data = JSON.parse(e.data);
       console.log(data);
-      // document.querySelector('#chat-text').value +=
-      //     (data.username + ': ' +  data.message + '\n');
-
-      // messagesTable
-      //creem o variabila cu un rand de tabel
-
-      // var newR = "<tr> <td>"+
-      //     "<span class=\"avatar avatar-32 bg-secondary text-white rounded-2\">"+data.username[0]+"</span>"
-      //     +"</td><td>"+data.username+"</td> <td>"+data.message+"</td> </tr>";
 
       var newR =
         "<tr>" +
