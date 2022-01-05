@@ -38,9 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.auth.forms',
     'chat',
     'channels',
+    # 'django_extensions',
+    # 'django.contrib.admindocs'
 ]
 
 CSRF_COOKIE_HTTPONLY = False  # False since we will grab it via universal-cookies
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware', 
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'chat.middleware.banMiddleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
